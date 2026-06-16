@@ -1,0 +1,50 @@
+title: "CloudRails read-only onboarding"
+description: "Creates a read-only group, service user, policy, and API key for CloudRails FinOps."
+schemaVersion: 1.1.0
+version: "v1"
+
+# Resource Manager auto-fills tenancy_ocid + region from the stack's context; the customer only
+# touches domain_name, and only if their identity domain is not "Default".
+variableGroups:
+  - title: "Identity domain"
+    variables:
+      - domain_name
+  - title: "Tenancy context (filled automatically by Resource Manager)"
+    variables:
+      - tenancy_ocid
+      - region
+    visible: false
+
+variables:
+  domain_name:
+    type: string
+    title: "Identity domain"
+    description: "Leave as Default unless your tenancy uses multiple identity domains."
+    default: "Default"
+    required: true
+  tenancy_ocid:
+    type: string
+    title: "Tenancy OCID"
+  region:
+    type: string
+    title: "Region"
+
+# Surface the copy-paste values prominently after Apply.
+outputGroups:
+  - title: "Copy these into CloudRails registration"
+    outputs:
+      - tenancy_name
+      - tenancy_ocid
+      - user_ocid
+      - region
+      - fingerprint
+      - private_key_pem
+
+outputs:
+  private_key_pem:
+    type: string
+    title: "API private key (PEM) — secret"
+    sensitive: true
+  tenancy_name:
+    type: string
+    title: "Tenancy name"
