@@ -48,9 +48,13 @@ resource "oci_identity_policy" "readers" {
     "Allow group ${local.grp} to read metrics in tenancy",          # Monitoring (utilization / idle)
     "Allow group ${local.grp} to inspect all-resources in tenancy", # Resource Search + list_* (inventory)
 
-    # --- FOCUS settled-cost: object read on the Cost-&-Usage export bucket. Harmless if the export
-    #     job/bucket isn't configured yet (read returns empty). ---
-    "Allow group ${local.grp} to read objects in tenancy where target.bucket.name = 'cloudrails-focus-export'",
+    # --- FOCUS / Cost-&-Usage Reports: Oracle writes these to an ORACLE-OWNED bucket in the
+    #     `reporting` tenancy (bucket name = the tenancy OCID), NOT the customer's tenancy — so this
+    #     is a CROSS-TENANCY endorse, not a local Allow. `reporting` is Oracle's fixed cost-report
+    #     tenancy (same OCID for every customer). Harmless until the customer enables Cost & Usage
+    #     Reports (the bucket simply 404s). ---
+    "Define tenancy reporting as ocid1.tenancy.oc1..aaaaaaaaned4fkpkisbwjlr56u7cj63lf3wffbiifq7rk7w2g4ofunijsuuq",
+    "Endorse group ${local.grp} to read objects in tenancy reporting",
 
     # --- PLURAL alias `usage-reports`: NOT a recognized OCI resource-type (Part B verification,
     #     2026-06-16). OCI validates resource-types at CreatePolicy, so an ACTIVE plural statement
