@@ -63,12 +63,16 @@ resource "oci_identity_policy" "readers" {
     #     proves OCI accepts it. ---
     # "Allow group ${local.grp} to read usage-reports in tenancy",
 
-    # --- OPTIONAL / UNCONFIRMED: commitment (OneSubscription). Add only after run_commitment_ingest
-    #     names the real resource-type in a ServiceError (see docs/REAL_TENANCY_ACTIVATION.md,
-    #     "Commitment / OneSubscription grants"). ---
-    # "Allow group ${local.grp} to read osub-subscription in tenancy",
-    # "Allow group ${local.grp} to read osub-commitment  in tenancy",
-    # "Allow group ${local.grp} to read osub-usage        in tenancy",
+    # --- Universal Credits / commitment (OneSubscription) — CONFIRMED LIVE 2026-06-21 against a
+    #     real committed tenancy (me-jeddah-1). Read-only, tenancy-level (account-management
+    #     metadata); powers the commitment burn-down + remaining-balance tile. A pay-as-you-go
+    #     tenancy simply returns no commitment (the tile shows PAYG). ---
+    "Allow group ${local.grp} to read subscriptions in tenancy",
+    "Allow group ${local.grp} to read subscribed-services in tenancy",
+    "Allow group ${local.grp} to read rate-cards in tenancy",
+    "Allow group ${local.grp} to read billing-schedules in tenancy",
+    "Allow group ${local.grp} to read computed-usages in tenancy",
+    "Allow group ${local.grp} to read invoices in tenancy",
   ]
 }
 
